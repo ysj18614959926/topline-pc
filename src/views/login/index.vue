@@ -3,14 +3,14 @@
     <el-form :model="numberValidateForm" ref="numberValidateForm" class="demo-ruleForm">
       <img src="./images/logo_index.png" alt="黑马logo">
       <el-form-item>
-        <el-input type="text" placeholder="手机号"></el-input>
+        <el-input type="text" placeholder="手机号" v-model='loginMessage.mobile'></el-input>
       </el-form-item>
       <el-form-item>
         <el-col :span="15">
-          <el-input type="text" placeholder="验证码"></el-input>
+          <el-input type="text" placeholder="验证码" v-model='loginMessage.code'></el-input>
         </el-col>
         <el-col :offset="1" :span="8">
-          <el-button>获取验证码</el-button>
+          <el-button @click='handelGetCode'>获取验证码</el-button>
         </el-col>
       </el-form-item>
       <el-form-item>
@@ -23,6 +23,30 @@
   </div>
 </template>
 <script>
+import axios from 'axios/dist/axios.js'
+export default {
+  data () {
+    return {
+      loginMessage: {
+        mobile: null,
+        code: null
+      }
+    }
+  },
+  methods: {
+    handelGetCode () {
+      const {
+        mobile
+      } = this.loginMessage
+      axios({
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/captchas/' + mobile,
+        method: 'GET'
+      }).then(res => {
+        console.log(res)
+      })
+    }
+  }
+}
 
 </script>
 <style>
