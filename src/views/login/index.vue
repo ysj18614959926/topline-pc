@@ -1,40 +1,46 @@
 <template>
   <div>
-    <el-form :model="numberValidateForm" ref="numberValidateForm" class="demo-ruleForm">
+    <el-form>
       <img src="./images/logo_index.png" alt="黑马logo">
-      <el-form-item>
+      <el-form-item :rules="[{required:true,message:'必填',trigger:['blur','change']}]">
         <el-input type="text" placeholder="手机号" v-model='loginMessage.mobile'></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="el-form-item-code">
         <el-col :span="15">
           <el-input type="text" placeholder="验证码" v-model='loginMessage.code'></el-input>
         </el-col>
         <el-col :offset="1" :span="8">
-          <el-button @click='handelGetCode'>获取验证码</el-button>
+          <el-button @click='handelGetCode' :disabled='disGetCode' class="getCode">获取验证码</el-button>
         </el-col>
       </el-form-item>
       <el-form-item>
         <el-checkbox checked>我已阅读并同意用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('numberValidateForm')">提交</el-button>
+        <el-button type="primary" @click='handelLogin'>提交</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
 import axios from 'axios/dist/axios.js'
+import '@/vendor/gt.js'
 export default {
   data () {
     return {
       loginMessage: {
         mobile: null,
         code: null
-      }
+      },
+      disGetCode: false
     }
   },
   methods: {
     handelGetCode () {
+      if (this.loginMessage.mobile === null) {
+        this.$message.error('手机号必填')
+        return
+      }
       const {
         mobile
       } = this.loginMessage
@@ -42,7 +48,41 @@ export default {
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/captchas/' + mobile,
         method: 'GET'
       }).then(res => {
-        console.log(res)
+        this.disGetCode = true
+        const data = res.data.data
+        window.initGeetest({
+          // 以下配置参数来自服务端 SDK
+          gt: data.gt,
+          challenge: data.challenge,
+          offline: !data.success,
+          new_captcha: true,
+          product: 'float'
+        }, function (captchaObj) {
+          captchaObj.appendTo('.el-form-item-code')
+          captchaObj.onReady(function () {
+            captchaObj.verify()
+          }).onSuccess(function () {
+            console.log(captchaObj.getValidate())
+            const { geetest_challenge: challenge, geetest_seccode: seccode, geetest_validate: validate } = captchaObj.getValidate()
+            axios({
+              url: 'http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/' + mobile,
+              method: 'GET',
+              params: {
+                challenge, seccode, validate
+              }
+            }).then(res => {
+            })
+          }).onError(function () {})
+        })
+      })
+    },
+    handelLogin () {
+      axios({
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        method: 'POST',
+        data: this.loginMessage
+      }).then(res => {
+        this.$router.push('/home')
       })
     }
   }
@@ -80,7 +120,6 @@ export default {
   .el-input__inner {
     width: 100%;
     height: 40px;
-    margin-bottom: 15px;
   }
 
   .el-button--primary {
