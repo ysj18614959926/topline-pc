@@ -6,7 +6,7 @@ export default new Router({
   routes: [{
     name: 'home',
     path: '/',
-    component: () => import('@/views/home')
+    component: () => import('@/views/login')
   }, {
     name: 'login',
     path: '/login',
