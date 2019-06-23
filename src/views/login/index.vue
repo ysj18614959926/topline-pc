@@ -115,7 +115,7 @@ export default {
             method: 'POST',
             data: this.loginMessage
           }).then(res => {
-            this.$router.push('/home')
+            this.$router.push('/')
           })
         }
       })
