@@ -1,8 +1,12 @@
 <template>
   <el-container>
-    <el-aside width="200px"><layoutSlides></layoutSlides></el-aside>
+    <el-aside width="200px">
+      <layoutSlides></layoutSlides>
+    </el-aside>
     <el-container>
-      <el-header><layoutHeader /></el-header>
+      <el-header>
+        <layoutHeader />
+      </el-header>
       <el-main>Main</el-main>
     </el-container>
   </el-container>
@@ -17,7 +21,17 @@ export default {
     }
   },
   components: {
-    layoutHeader, layoutSlides
+    layoutHeader,
+    layoutSlides
   }
 }
 </script>
+<style>
+.el-container{
+    height: 100%;
+}
+.el-aside {
+  height: 100%;
+  background-color: #323745;
+}
+</style>
