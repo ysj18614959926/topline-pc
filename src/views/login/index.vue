@@ -1,20 +1,20 @@
 <template>
   <div>
-    <el-form>
+    <el-form :model='loginMessage' :rules='rules' ref='loginMessage'>
       <img src="./images/logo_index.png" alt="黑马logo">
-      <el-form-item :rules="[{required:true,message:'必填',trigger:['blur','change']}]">
+      <el-form-item prop='mobile'>
         <el-input type="text" placeholder="手机号" v-model='loginMessage.mobile'></el-input>
       </el-form-item>
-      <el-form-item class="el-form-item-code">
+      <el-form-item class="el-form-item-code" prop='code'>
         <el-col :span="15">
           <el-input type="text" placeholder="验证码" v-model='loginMessage.code'></el-input>
         </el-col>
         <el-col :offset="1" :span="8">
-          <el-button @click='handelGetCode' :disabled='disGetCode' class="getCode">获取验证码</el-button>
+          <el-button @click='handelGetCode' class="getCode" :disabled='!!disGetCode'>{{disGetCode?count:'获取验证码'}}</el-button>
         </el-col>
       </el-form-item>
-      <el-form-item>
-        <el-checkbox checked>我已阅读并同意用户协议和隐私条款</el-checkbox>
+      <el-form-item prop='isRead'>
+        <el-checkbox :checked='loginMessage.isRead' v-model='loginMessage.isRead'>我已阅读并同意用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click='handelLogin'>提交</el-button>
@@ -25,22 +25,45 @@
 <script>
 import axios from 'axios/dist/axios.js'
 import '@/vendor/gt.js'
+const num = 5
 export default {
   data () {
     return {
       loginMessage: {
         mobile: null,
-        code: null
+        code: null,
+        isRead: true
       },
-      disGetCode: false
+      rules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { len: 11, message: '请输入正确的手机号', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '请输入验证码', trigger: 'blur' }
+        ],
+        isRead: [
+          { required: true, message: '必须已读' },
+          { pattern: /true/, message: '必须已读' }
+        ]
+      },
+      count: num,
+      disGetCode: null
     }
   },
   methods: {
-    handelGetCode () {
-      if (this.loginMessage.mobile === null) {
-        this.$message.error('手机号必填')
-        return
-      }
+    daojishi () {
+      this.disGetCode = setInterval(() => {
+        this.count--
+        if (this.count <= 0) {
+          clearInterval(this.disGetCode)
+          this.disGetCode = null
+          this.count = num
+        }
+      }, 500)
+    },
+    sendCode () {
       const {
         mobile
       } = this.loginMessage
@@ -48,7 +71,6 @@ export default {
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/captchas/' + mobile,
         method: 'GET'
       }).then(res => {
-        this.disGetCode = true
         const data = res.data.data
         window.initGeetest({
           // 以下配置参数来自服务端 SDK
@@ -57,11 +79,12 @@ export default {
           offline: !data.success,
           new_captcha: true,
           product: 'float'
-        }, function (captchaObj) {
+        }, (captchaObj) => {
           captchaObj.appendTo('.el-form-item-code')
           captchaObj.onReady(function () {
             captchaObj.verify()
-          }).onSuccess(function () {
+          }).onSuccess(() => {
+            this.daojishi()
             console.log(captchaObj.getValidate())
             const { geetest_challenge: challenge, geetest_seccode: seccode, geetest_validate: validate } = captchaObj.getValidate()
             axios({
@@ -76,13 +99,25 @@ export default {
         })
       })
     },
+    handelGetCode () {
+      this.$refs.loginMessage.validateField('mobile', (e) => {
+        if (e) {
+          return
+        }
+        this.sendCode()
+      })
+    },
     handelLogin () {
-      axios({
-        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
-        method: 'POST',
-        data: this.loginMessage
-      }).then(res => {
-        this.$router.push('/home')
+      this.$refs['loginMessage'].validate((valid) => {
+        if (valid) {
+          axios({
+            url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+            method: 'POST',
+            data: this.loginMessage
+          }).then(res => {
+            this.$router.push('/home')
+          })
+        }
       })
     }
   }
