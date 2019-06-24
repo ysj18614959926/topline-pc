@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import nprogress from 'nprogress'
 Vue.use(Router)
 const getUser = window.localStorage.getItem('userLogin')
 const router = new Router({
@@ -25,6 +26,7 @@ const router = new Router({
   }]
 })
 router.beforeEach((to, from, next) => {
+  nprogress.start()
   if (to.path === '/login') {
     if (getUser) {
       next('/')
@@ -38,5 +40,8 @@ router.beforeEach((to, from, next) => {
       next('/login')
     }
   }
+})
+router.afterEach(() => {
+  nprogress.done()
 })
 export default router
