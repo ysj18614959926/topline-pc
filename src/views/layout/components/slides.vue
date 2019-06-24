@@ -1,9 +1,9 @@
 <template>
-  <el-menu :default-openeds="['1', '2']">
-    <el-menu-item index=1>首页</el-menu-item>
-    <el-submenu index="2">
+  <el-menu :default-openeds="['1', '2']" router>
+    <el-menu-item index='/'>首页</el-menu-item>
+    <el-submenu>
       <template slot="title">内容管理</template>
-      <el-menu-item index="2-1">发布文章</el-menu-item>
+      <el-menu-item index="/publish">发布文章</el-menu-item>
       <el-menu-item index="2-2">内容列表</el-menu-item>
       <el-menu-item index="2-2">评论列表</el-menu-item>
       <el-menu-item index="2-2">素材管理</el-menu-item>

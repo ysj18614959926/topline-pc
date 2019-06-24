@@ -5,7 +5,19 @@ Vue.use(Router)
 export default new Router({
   routes: [{
     path: '/',
-    component: () => import('@/views/layout')
+    component: () => import('@/views/layout'),
+    children: [
+      {
+        name: 'home',
+        path: '',
+        component: () => import('@/views/home')
+      },
+      {
+        name: 'publish',
+        path: '/publish',
+        component: () => import('@/views/publish')
+      }
+    ]
   }, {
     name: 'login',
     path: '/login',
