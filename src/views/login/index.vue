@@ -25,6 +25,7 @@
 <script>
 import axios from 'axios/dist/axios.js'
 import '@/vendor/gt.js'
+import { setUser } from '@/utils/auth'
 const num = 5
 export default {
   data () {
@@ -115,8 +116,8 @@ export default {
             method: 'POST',
             data: this.loginMessage
           }).then(res => {
-            window.localStorage.setItem('userLogin', JSON.stringify(res.data.data))
-            this.$router.push('/')
+            setUser(res.data.data)
+            window.location.reload()
           })
         }
       })

@@ -10,17 +10,24 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>用户设置</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click.native='handelLogout'>退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
   </el-row>
 </template>
 <script>
+import { removeUser } from '@/utils/auth'
 export default {
   data () {
     return {
       userLogin: JSON.parse(window.localStorage.getItem('userLogin')).name
+    }
+  },
+  methods: {
+    handelLogout () {
+      removeUser()
+      window.location.reload()
     }
   }
 }
