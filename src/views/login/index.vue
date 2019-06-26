@@ -30,8 +30,8 @@ export default {
   data () {
     return {
       loginMessage: {
-        mobile: null,
-        code: null,
+        mobile: '13911111111',
+        code: '123456',
         isRead: true
       },
       rules: {
@@ -118,7 +118,7 @@ export default {
           method: 'post',
           data: this.loginMessage
         })
-        setUser(res.data.data)
+        setUser(res)
         window.location.reload()
       } catch (err) {
         console.log(err)

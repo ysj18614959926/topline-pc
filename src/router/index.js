@@ -17,6 +17,11 @@ const router = new Router({
         name: 'publish',
         path: '/publish',
         component: () => import('@/views/publish')
+      },
+      {
+        name: 'articals',
+        path: '/articals',
+        component: () => import('@/views/articals')
       }
     ]
   }, {
