@@ -6,7 +6,8 @@ import App from './App.vue'
 import 'nprogress/nprogress.css'
 import axios from 'axios'
 Vue.prototype.$http = axios
-axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+// axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+axios.defaults.baseURL = 'http://toutiao.course.itcast.cn/mp/v1_0'
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)

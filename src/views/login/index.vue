@@ -25,7 +25,6 @@
 <script>
 import '@/vendor/gt.js'
 import { setUser } from '@/utils/auth'
-import axios from 'axios'
 const num = 5
 export default {
   data () {
@@ -65,39 +64,40 @@ export default {
       }, 500)
     },
     async sendCode () {
-      const {
-        mobile
-      } = this.loginMessage
       try {
-        const res = await this.$http({
+        const {
+          mobile
+        } = this.loginMessage
+        const res = this.$http({
           url: '/captchas/' + mobile,
-          method: 'get'
+          method: 'GET'
         })
         const data = res.data.data
-        window.initGeetest({
+        const captchaObj = await this.initGeetest({
           gt: data.gt,
           challenge: data.challenge,
           offline: !data.success,
-          product: 'float',
-          new_captcha: true
-        }, (captchaObj) => {
-          captchaObj.appendTo('.el-form-item-code')
-          captchaObj.onReady(function () {
-            captchaObj.verify()
-          }).onSuccess(() => {
+          new_captcha: true,
+          product: 'float'
+        })
+        captchaObj.appendTo('.el-form-item-code')
+        captchaObj.onReady(function () {
+          captchaObj.verify()
+        }).onSuccess(async () => {
+          try {
             this.daojishi()
-            console.log(this)
+            console.log(captchaObj.getValidate())
             const { geetest_challenge: challenge, geetest_seccode: seccode, geetest_validate: validate } = captchaObj.getValidate()
-            axios({
-              url: 'http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/' + mobile,
+            await this.$http({
+              url: '/sms/codes/' + mobile,
               method: 'GET',
               params: {
                 challenge, seccode, validate
               }
-            }).then(res => {
-              console.log('发送过了')
             })
-          }).onError(function () {})
+          } catch (err) {
+            console.log(err)
+          }
         })
       } catch (err) {
         console.log(err)
