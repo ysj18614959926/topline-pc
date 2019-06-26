@@ -107,19 +107,18 @@ export default {
         this.sendCode()
       })
     },
-    handelLogin () {
-      this.$refs['loginMessage'].validate((valid) => {
-        if (valid) {
-          this.$http({
-            url: '/authorizations',
-            method: 'POST',
-            data: this.loginMessage
-          }).then(res => {
-            setUser(res.data.data)
-            window.location.reload()
-          })
-        }
-      })
+    async handelLogin () {
+      try {
+        const res = await this.$http({
+          url: '/authorizations',
+          method: 'post',
+          data: this.loginMessage
+        })
+        setUser(res.data.data)
+        window.location.reload()
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }

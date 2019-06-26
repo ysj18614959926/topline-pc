@@ -25,6 +25,7 @@
 <script>
 import '@/vendor/gt.js'
 import { setUser } from '@/utils/auth'
+import axios from 'axios'
 const num = 5
 export default {
   data () {
@@ -63,41 +64,44 @@ export default {
         }
       }, 500)
     },
-    sendCode () {
+    async sendCode () {
       const {
         mobile
       } = this.loginMessage
-      this.$http({
-        url: '/captchas/' + mobile,
-        method: 'GET'
-      }).then(res => {
+      try {
+        const res = await this.$http({
+          url: '/captchas/' + mobile,
+          method: 'get'
+        })
         const data = res.data.data
         window.initGeetest({
-          // 以下配置参数来自服务端 SDK
           gt: data.gt,
           challenge: data.challenge,
           offline: !data.success,
-          new_captcha: true,
-          product: 'float'
+          product: 'float',
+          new_captcha: true
         }, (captchaObj) => {
           captchaObj.appendTo('.el-form-item-code')
           captchaObj.onReady(function () {
             captchaObj.verify()
           }).onSuccess(() => {
             this.daojishi()
-            console.log(captchaObj.getValidate())
+            console.log(this)
             const { geetest_challenge: challenge, geetest_seccode: seccode, geetest_validate: validate } = captchaObj.getValidate()
-            this.$http({
-              url: '/sms/codes/' + mobile,
+            axios({
+              url: 'http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/' + mobile,
               method: 'GET',
               params: {
                 challenge, seccode, validate
               }
             }).then(res => {
+              console.log('发送过了')
             })
           }).onError(function () {})
         })
-      })
+      } catch (err) {
+        console.log(err)
+      }
     },
     handelGetCode () {
       this.$refs.loginMessage.validateField('mobile', (e) => {
@@ -107,19 +111,18 @@ export default {
         this.sendCode()
       })
     },
-    handelLogin () {
-      this.$refs['loginMessage'].validate((valid) => {
-        if (valid) {
-          this.$http({
-            url: '/authorizations',
-            method: 'POST',
-            data: this.loginMessage
-          }).then(res => {
-            setUser(res.data.data)
-            window.location.reload()
-          })
-        }
-      })
+    async handelLogin () {
+      try {
+        const res = await this.$http({
+          url: '/authorizations',
+          method: 'post',
+          data: this.loginMessage
+        })
+        setUser(res.data.data)
+        window.location.reload()
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }
