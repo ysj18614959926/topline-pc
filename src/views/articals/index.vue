@@ -10,7 +10,7 @@
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column label='图片'>
           <template slot-scope='scope'>
-            <p>{{scope.row.cover.images[0]}}</p>
+            <img :src="scope.row.cover.images[0]" alt="err" width="50">
           </template>
       </el-table-column>
       <el-table-column prop="title" label="标题" width="180">
@@ -23,8 +23,8 @@
       <el-table-column prop="pubdate" label="日期" width="180">
       </el-table-column>
       <el-table-column label="操作">
-         <template>
-             <el-button type='danger' size='mini'>删除</el-button>
+         <template slot-scope='scope'>
+             <el-button type='danger' size='mini' @click='handelDeleteArticals(scope.row.id)'>删除</el-button>
              <el-button type='warning' size='mini'>修改</el-button>
          </template>
       </el-table-column>
@@ -83,6 +83,19 @@ export default {
     },
     handelChangePage (e) {
       this.page = e
+      this.handelGetArtical()
+    },
+    async handelDeleteArticals (id) {
+      if (confirm('确定删除？')) {
+        try {
+          await this.$http({
+            url: '/articles/' + id,
+            method: 'DELETE'
+          })
+        } catch (err) {
+          console.log(err)
+        }
+      }
       this.handelGetArtical()
     }
   }

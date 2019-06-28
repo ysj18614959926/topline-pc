@@ -1,5 +1,5 @@
 <template>
-  <el-menu :default-openeds="['1', '2']" router>
+  <el-menu :default-openeds="['1', '2']" router  background-color="#545c64" text-color="#fff">
     <el-menu-item index='/'>首页</el-menu-item>
     <el-submenu>
       <template slot="title">内容管理</template>
