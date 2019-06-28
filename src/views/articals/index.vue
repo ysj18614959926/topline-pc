@@ -8,11 +8,8 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="频道列表">
-                <el-select v-model="filter.channel_id" placeholder="请选择活动区域">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
-                </el-select>
-              </el-form-item>
+              <artical-channel v-model='filter.channel_id'></artical-channel>
+            </el-form-item>
           <el-form-item label="活动时间">
               <el-date-picker
               v-model="activeTime"
@@ -63,7 +60,11 @@
   </div>
 </template>
 <script>
+import ArticalChannel from '@/components/ArticalChannel'
 export default {
+  components: {
+    ArticalChannel
+  },
   data () {
     return {
       tableData: [],
