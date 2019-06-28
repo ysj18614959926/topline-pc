@@ -26,7 +26,7 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
   return Promise.reject(error)
 })
-
+// 在axios响应的时候把数据转换成json格式，这样就能够获取到真正的id
 axios.defaults.transformResponse = [function (data, headers) {
   return JSONBigInt.parse(data)
 }]

@@ -1,5 +1,35 @@
 <template>
   <div>
+      <el-form ref="filter" :model="filter" label-width="80px">
+          <el-form-item label="文章状态">
+              <el-radio-group v-model="filter.status">
+                <el-radio label="">全部</el-radio>
+                <el-radio v-for='(item,index) in msgStatus' :label="index" :key='item.label'>{{item.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="频道列表">
+                <el-select v-model="filter.channel_id" placeholder="请选择活动区域">
+                  <el-option label="区域一" value="shanghai"></el-option>
+                  <el-option label="区域二" value="beijing"></el-option>
+                </el-select>
+              </el-form-item>
+          <el-form-item label="活动时间">
+              <el-date-picker
+              v-model="activeTime"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              @change='handelChangeDate'
+              value-format='yyyy-MM-dd'
+              >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handelFilter">筛选</el-button>
+          </el-form-item>
+        </el-form>
+    <!-- 分页 -->
     <el-pagination
     background
     layout="prev, pager, next"
@@ -7,6 +37,7 @@
     :disabled='loading'
     >
     </el-pagination>
+    <!-- 文章列表 -->
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column label='图片'>
           <template slot-scope='scope'>
@@ -56,7 +87,14 @@ export default {
       ],
       total: 0,
       page: 1,
-      loading: false
+      loading: false,
+      filter: {
+        status: null,
+        channel_id: null,
+        begin_pubdate: null,
+        end_pubdate: null
+      },
+      activeTime: null
     }
   },
   created () {
@@ -75,7 +113,6 @@ export default {
         })
         this.tableData = res.results
         this.total = res.total_count
-        console.log(res)
       } catch (err) {
         console.log(err)
       }
@@ -97,6 +134,14 @@ export default {
         }
       }
       this.handelGetArtical()
+    },
+    handelFilter () {
+
+    },
+    handelChangeDate (e) {
+      this.filter.begin_pubdate = e[0]
+      this.filter.end_pubdate = e[1]
+      console.log(e[0], e[1])
     }
   }
 }
