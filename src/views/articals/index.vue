@@ -23,7 +23,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="handelFilter">筛选</el-button>
+            <el-button type="primary" @click="handelGetArtical">筛选</el-button>
           </el-form-item>
         </el-form>
     <!-- 分页 -->
@@ -105,11 +105,18 @@ export default {
     async handelGetArtical () {
       this.loading = true
       try {
+        let filterQuery = []
+        for (var key in this.filter) {
+          if (this.filter[key] !== null && this.filter[key] !== '' && this.filter[key] !== undefined) {
+            filterQuery[key] = this.filter[key]
+          }
+        }
         const res = await this.$http({
           url: '/articles',
           method: 'GET',
           params: {
-            page: this.page
+            page: this.page,
+            ...filterQuery
           }
         })
         this.tableData = res.results
@@ -135,9 +142,6 @@ export default {
         }
       }
       this.handelGetArtical()
-    },
-    handelFilter () {
-
     },
     handelChangeDate (e) {
       this.filter.begin_pubdate = e[0]
