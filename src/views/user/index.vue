@@ -20,6 +20,17 @@
                 <el-button type='primary' @click='editUser'>修改</el-button>
             </el-form>
         </el-col>
+        <el-col :span='5' :offset='2'>
+                <el-upload
+                class="avatar-uploader"
+                action="http://ttapi.research.itcast.cn/mp/v1_0/user/photo"
+                :show-file-list="false"
+                :http-request='uploadImage'
+                >
+                <img v-if="userInfo.photo" :src="userInfo.photo" class="avatar" style="width:300px">
+                <p>上传图片</p>
+                </el-upload>
+        </el-col>
     </div>
 </template>
 <script>
@@ -31,7 +42,8 @@ export default {
         intro: null,
         id: null,
         mobile: null,
-        email: null
+        email: null,
+        photo: null
       }
     }
   },
@@ -68,6 +80,24 @@ export default {
         console.log(res)
       } catch (err) {
         this.$message.error = '更改用户信息失败'
+      }
+    },
+    async uploadImage (e) {
+      try {
+        let formData = new FormData()
+        formData.append('photo', e.file)
+        const res = await this.$http({
+          url: '/user/photo',
+          method: 'patch',
+          data: formData
+        })
+        this.userInfo.photo = res.photo
+        this.$message({
+          type: 'success',
+          message: '上传成功'
+        })
+      } catch (err) {
+        this.$message.error = '上传图片失败'
       }
     }
   }
