@@ -53,7 +53,7 @@
       <el-table-column label="操作">
          <template slot-scope='scope'>
              <el-button type='danger' size='mini' @click='handelDeleteArticals(scope.row.id)'>删除</el-button>
-             <el-button type='warning' size='mini'>修改</el-button>
+             <el-button type='warning' size='mini' @click='$router.push(`/publish/${scope.row.id}`)'>修改</el-button>
          </template>
       </el-table-column>
     </el-table>

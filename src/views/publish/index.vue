@@ -56,24 +56,59 @@ export default {
       editorOption: {} // 自定义选项
     }
   },
+  created () {
+    if (this.$route.name === 'editArtital') {
+      this.handelGetArtical(this.$route.params.id)
+    }
+  },
   methods: {
-    async handelAddArtical (draft) {
+    async handelGetArtical (id) {
       try {
-        await this.$http({
-          url: '/articles',
-          method: 'POST',
-          data: this.publish,
-          params: {
-            draft
-          }
+        const res = await this.$http({
+          url: '/articles/' + id,
+          method: 'GET'
         })
-        this.$message({
-          message: '添加成功',
-          type: 'success'
-        })
-        this.$router.push('/articals')
+        this.publish = res
       } catch (err) {
-        console.log(err)
+        this.$message.error = '获取文章失败'
+      }
+    },
+    async handelAddArtical (draft) {
+      if (this.$route.name === 'editArtital') {
+        try {
+          await this.$http({
+            url: '/articles/' + this.$route.params.id,
+            data: this.publish,
+            method: 'PUT',
+            params: {
+              draft
+            }
+          })
+          this.$message({
+            type: 'success',
+            message: '编辑成功'
+          })
+        } catch (err) {
+          this.$message.error = '编辑失败'
+        }
+      } else {
+        try {
+          await this.$http({
+            url: '/articles',
+            method: 'POST',
+            data: this.publish,
+            params: {
+              draft
+            }
+          })
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
+          this.$router.push('/articals')
+        } catch (err) {
+          console.log(err)
+        }
       }
     }
   }
