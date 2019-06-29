@@ -15,7 +15,7 @@
       <el-menu-item index="3-2">粉丝画像</el-menu-item>
       <el-menu-item index="3-2">粉丝列表</el-menu-item>
     </el-submenu>
-    <el-menu-item index='4'>账户信息</el-menu-item>
+    <el-menu-item index='/user'>账户信息</el-menu-item>
   </el-menu>
 </template>
 <style scoped>

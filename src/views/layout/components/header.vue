@@ -9,7 +9,7 @@
           {{userLogin}}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>用户设置</el-dropdown-item>
+          <el-dropdown-item @click.native='$router.push("/user")'>用户设置</el-dropdown-item>
           <el-dropdown-item @click.native='handelLogout'>退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
