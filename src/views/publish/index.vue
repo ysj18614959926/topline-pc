@@ -61,6 +61,23 @@ export default {
       this.handelGetArtical(this.$route.params.id)
     }
   },
+  watch: {
+    '$route' (to, from) {
+      console.log(to)
+      if (to.name === 'publish') {
+        this.publish = {
+          title: null,
+          content: null,
+          cover: {
+            type: 0,
+            images: []
+          },
+          channel_id: null,
+          imgType: 'none'
+        }
+      }
+    }
+  },
   methods: {
     async handelGetArtical (id) {
       try {
