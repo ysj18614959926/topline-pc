@@ -7,6 +7,7 @@ import 'nprogress/nprogress.css'
 import axios from 'axios'
 import { getUser } from '@/utils/auth'
 import JSONBigInt from 'json-bigint'
+import store from './store'
 Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 // axios.defaults.baseURL = 'http://toutiao.course.itcast.cn/mp/v1_0'
@@ -35,5 +36,6 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

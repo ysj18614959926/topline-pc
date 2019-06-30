@@ -77,6 +77,7 @@ export default {
           type: 'success',
           message: '修改成功'
         })
+        this.$store.commit('changeUser', res)
         console.log(res)
       } catch (err) {
         this.$message.error = '更改用户信息失败'
@@ -92,6 +93,7 @@ export default {
           data: formData
         })
         this.userInfo.photo = res.photo
+        this.$store.commit('changeUser', res)
         this.$message({
           type: 'success',
           message: '上传成功'

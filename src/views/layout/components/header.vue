@@ -6,7 +6,8 @@
     <el-col :span='4'>
       <el-dropdown>
         <span class="el-dropdown-link">
-          {{userLogin}}<i class="el-icon-arrow-down el-icon--right"></i>
+          <img :src="$store.state.user.photo" alt="" style="width:30px">
+          {{$store.state.user.name}}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native='$router.push("/user")'>用户设置</el-dropdown-item>
