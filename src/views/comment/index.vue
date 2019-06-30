@@ -50,14 +50,14 @@ export default {
       }
     },
     async handelChangeState (item) {
-      console.log(item)
+      console.log(item.comment_status)
       item.disabled = true
       try {
         await this.$http({
-          url: '/comments/status/' + item.id,
+          url: '/comments/status?article_id=' + item.id,
           method: 'put',
           data: {
-            allow_comment: !item.comment_status
+            allow_comment: item.comment_status
           }
         })
         this.$message({
