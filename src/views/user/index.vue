@@ -58,7 +58,7 @@ export default {
           method: 'get'
         })
         this.userInfo = res
-        console.log(res)
+        this.$store.commit('changeUser', res)
       } catch (err) {
         this.$message.error = '加载用户信息失败'
       }

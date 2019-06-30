@@ -6,7 +6,7 @@
     <el-col :span='4'>
       <el-dropdown>
         <span class="el-dropdown-link">
-          <img :src="$store.state.user.photo" alt="" style="width:30px">
+          <img :src="$store.state.user.photo" alt="" style="width:30px;height: 30px;border-radius: 50%">
           {{$store.state.user.name}}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
