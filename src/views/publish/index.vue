@@ -13,10 +13,19 @@
             </quill-editor>
          </el-form-item>
          <el-form-item label="封面">
-             <el-radio-group  v-model="publish.cover">
-                 <el-radio label="线上品牌商赞助"></el-radio>
-                 <el-radio label="线下场地免费"></el-radio>
+             <el-radio-group  v-model="publish.cover.type">
+                 <el-radio :label="1">单图</el-radio>
+                 <el-radio :label="3">三图</el-radio>
+                 <el-radio :label="0">无图</el-radio>
+                 <el-radio :label="-1">自动</el-radio>
              </el-radio-group>
+            </el-form-item>
+            <el-form-item>
+                 <template v-if='publish.cover.type > 0'>
+                    <el-col :span='6' v-for='item in publish.cover.type' :key='item'>
+                      <uploadImage v-model='publish.cover.images[item-1]'></uploadImage>
+                    </el-col>
+                 </template>
          </el-form-item>
          <el-form-item label='频道'>
              <artical-channel v-model='publish.channel_id'></artical-channel>
@@ -30,6 +39,7 @@
     </div>
 </template>
 <script>
+import uploadImage from './components/uploadImage'
 import ArticalChannel from '@/components/ArticalChannel'
 import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
@@ -39,15 +49,16 @@ export default {
   name: 'publish',
   components: {
     ArticalChannel,
-    quillEditor
+    quillEditor,
+    uploadImage
   },
   data () {
     return {
       publish: {
-        title: null,
-        content: null,
+        title: '',
+        content: '',
         cover: {
-          type: 0,
+          type: 1,
           images: []
         },
         channel_id: null,
